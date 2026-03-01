@@ -207,7 +207,7 @@
             border-top: 1px solid var(--section-border);
             padding-top: 1.5rem;
             display: flex;
-            align-items: center;
+            align-items: baseline;
             justify-content: center;
             gap: 1rem;
             transition: border-color 0.3s;
@@ -221,10 +221,16 @@
             color: var(--toggle);
             transition: color 0.2s;
             padding: 0;
+            line-height: 1;
+            vertical-align: baseline;
         }
 
         .toggle:hover {
             color: var(--toggle-hover);
+        }
+
+        .source {
+            line-height: 1;
         }
 
         .source a {
