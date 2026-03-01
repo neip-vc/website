@@ -140,16 +140,31 @@
             text-decoration-color: var(--text);
         }
 
-        .locations {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .location {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+            transition: color 0.3s;
         }
 
-        .locations li {
-            font-size: 0.9rem;
-            line-height: 1.6;
+        .location-city {
             color: var(--text);
+            transition: color 0.3s;
+        }
+
+        .location .detail {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .location-city, .location .detail {
+            display: inline-block;
+            opacity: 1;
+            transition: opacity 0.4s ease, color 0.3s;
+        }
+
+        .location-city.fade, .location .detail.fade {
+            opacity: 0;
         }
 
         .portfolio {
@@ -236,16 +251,7 @@
             <a href="https://linkedin.com/in/noahpetermann" target="_blank" rel="noopener">LinkedIn</a>
         </div>
 
-        <section>
-            <h2>Based</h2>
-            <ul class="locations">
-                <li>Berlin <span class="detail">&mdash; main base</span></li>
-                <li>Helsinki <span class="detail">&mdash; researching</span></li>
-                <li>San Francisco <span class="detail">&mdash; inspiration</span></li>
-                <li>Austrian Alps <span class="detail">&mdash; heritage</span></li>
-                <li>South-East Asia <span class="detail">&mdash; exploring</span></li>
-            </ul>
-        </section>
+        <p class="location"><span class="location-city">Berlin</span> <span class="detail">&mdash; main base</span></p>
 
         <section>
             <h2>Building</h2>
@@ -319,6 +325,30 @@
                 applyTheme(e.matches ? 'light' : 'dark');
             }
         });
+
+        // Location cycling
+        const locations = [
+            ['Berlin', 'main base'],
+            ['Helsinki', 'researching'],
+            ['San Francisco', 'inspiration'],
+            ['Austrian Alps', 'heritage'],
+            ['South-East Asia', 'exploring']
+        ];
+        let locIndex = 0;
+        const cityEl = document.querySelector('.location-city');
+        const detailEl = document.querySelector('.location .detail');
+
+        setInterval(() => {
+            cityEl.classList.add('fade');
+            detailEl.classList.add('fade');
+            setTimeout(() => {
+                locIndex = (locIndex + 1) % locations.length;
+                cityEl.textContent = locations[locIndex][0];
+                detailEl.innerHTML = '&mdash; ' + locations[locIndex][1];
+                cityEl.classList.remove('fade');
+                detailEl.classList.remove('fade');
+            }, 400);
+        }, 3000);
     </script>
 </body>
 </html>
