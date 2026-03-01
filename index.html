@@ -27,6 +27,7 @@
             --sep: #444;
             --toggle: #555;
             --toggle-hover: #999;
+            --section-border: #222;
         }
 
         :root.light {
@@ -38,6 +39,7 @@
             --sep: #bbb;
             --toggle: #aaa;
             --toggle-hover: #666;
+            --section-border: #ddd;
         }
 
         body {
@@ -54,7 +56,7 @@
         }
 
         main {
-            max-width: 480px;
+            max-width: 520px;
             padding: 2rem;
             text-align: center;
         }
@@ -69,7 +71,7 @@
         .tagline {
             font-size: 0.95rem;
             color: var(--muted);
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             transition: color 0.3s;
         }
 
@@ -98,11 +100,97 @@
             transition: color 0.3s;
         }
 
+        section {
+            text-align: left;
+            border-top: 1px solid var(--section-border);
+            padding: 1.5rem 0;
+            transition: border-color 0.3s;
+        }
+
+        section h2 {
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+            transition: color 0.3s;
+        }
+
+        section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        section p:last-child {
+            margin-bottom: 0;
+        }
+
+        section a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--sep);
+            text-underline-offset: 2px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        section a:hover {
+            text-decoration-color: var(--text);
+        }
+
+        .portfolio {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .portfolio li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .portfolio .detail {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .reading-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .reading-links a {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .reading-links a:hover {
+            color: var(--text);
+        }
+
+        .footer {
+            border-top: 1px solid var(--section-border);
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: border-color 0.3s;
+        }
+
         .toggle {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--toggle);
             transition: color 0.2s;
             padding: 0;
@@ -112,12 +200,8 @@
             color: var(--toggle-hover);
         }
 
-        .source {
-            margin-top: 0.75rem;
-            font-size: 0.75rem;
-        }
-
         .source a {
+            font-size: 0.75rem;
             color: var(--toggle);
             text-decoration: none;
             transition: color 0.2s;
@@ -139,9 +223,46 @@
             <span class="sep">&middot;</span>
             <a href="https://linkedin.com/in/noahpetermann" target="_blank" rel="noopener">LinkedIn</a>
         </div>
-        <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
-        <div class="source">
-            <a href="https://github.com/neip-vc/website" target="_blank" rel="noopener">source</a>
+
+        <section>
+            <h2>Building</h2>
+            <p>Currently building <a href="https://aniva.health" target="_blank" rel="noopener">aniva.health</a>.</p>
+        </section>
+
+        <section>
+            <h2>Thinking</h2>
+            <p>Interested in Schopenhauer's Will, the concept of homeostasis, Nietzsche's Ewige Wiederkunft, and behavioral finance.</p>
+            <div class="reading-links">
+                <a href="https://plato.stanford.edu/entries/schopenhauer/" target="_blank" rel="noopener">Schopenhauer</a>
+                <a href="https://en.wikipedia.org/wiki/Homeostasis" target="_blank" rel="noopener">Homeostasis</a>
+                <a href="https://plato.stanford.edu/entries/nietzsche/" target="_blank" rel="noopener">Nietzsche</a>
+                <a href="https://en.wikipedia.org/wiki/Behavioral_economics" target="_blank" rel="noopener">Behavioral Finance</a>
+            </div>
+        </section>
+
+        <section>
+            <h2>Investing</h2>
+            <p>Currently building <a href="https://meridiani.vc" target="_blank" rel="noopener">meridiani.vc</a> &mdash; a next generation nano fund. Target closing 1M&euro;. Building the ecosystem for inception.</p>
+            <ul class="portfolio">
+                <li>
+                    <a href="https://sanitygroup.com" target="_blank" rel="noopener">Sanity Group</a>
+                    <span class="detail">&mdash; ex-employee, via VSOP. Oct 2021 &ndash; exit Feb 2026</span>
+                </li>
+                <li>
+                    <a href="https://louco.co" target="_blank" rel="noopener">Louco</a>
+                    <span class="detail">&mdash; first check investor. Dec 2024</span>
+                </li>
+                <li>
+                    <span class="detail">...and more in stealth.</span>
+                </li>
+            </ul>
+        </section>
+
+        <div class="footer">
+            <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
+            <span class="source">
+                <a href="https://github.com/neip-vc/website" target="_blank" rel="noopener">source</a>
+            </span>
         </div>
     </main>
     <script>
@@ -163,7 +284,6 @@
             applyTheme(next);
         }
 
-        // Saved preference > system preference
         const saved = localStorage.getItem('theme');
         if (saved) {
             applyTheme(saved);
@@ -171,7 +291,6 @@
             applyTheme('light');
         }
 
-        // React to system changes (only if no manual override)
         window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
             if (!localStorage.getItem('theme')) {
                 applyTheme(e.matches ? 'light' : 'dark');
