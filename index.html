@@ -9,6 +9,7 @@
     <meta property="og:description" content="Founder, Investor, Thinker">
     <meta property="og:url" content="https://neip.vc">
     <meta property="og:type" content="website">
+    <meta name="color-scheme" content="dark light">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>N</text></svg>">
     <style>
         * {
@@ -17,14 +18,37 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --muted: #888;
+            --link: #999;
+            --link-hover: #e8e8e8;
+            --sep: #444;
+            --toggle: #555;
+            --toggle-hover: #999;
+        }
+
+        :root.light {
+            --bg: #f5f5f5;
+            --text: #111;
+            --muted: #666;
+            --link: #666;
+            --link-hover: #111;
+            --sep: #bbb;
+            --toggle: #aaa;
+            --toggle-hover: #666;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
-            color: #e8e8e8;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -44,8 +68,9 @@
 
         .tagline {
             font-size: 0.95rem;
-            color: #888;
+            color: var(--muted);
             margin-bottom: 2.5rem;
+            transition: color 0.3s;
         }
 
         .links {
@@ -54,21 +79,52 @@
             justify-content: center;
             gap: 0.5rem;
             font-size: 0.875rem;
+            margin-bottom: 2.5rem;
         }
 
         .links a {
-            color: #999;
+            color: var(--link);
             text-decoration: none;
             transition: color 0.2s;
         }
 
         .links a:hover {
-            color: #e8e8e8;
+            color: var(--link-hover);
         }
 
         .sep {
-            color: #444;
+            color: var(--sep);
             user-select: none;
+            transition: color 0.3s;
+        }
+
+        .toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--toggle);
+            transition: color 0.2s;
+            padding: 0;
+        }
+
+        .toggle:hover {
+            color: var(--toggle-hover);
+        }
+
+        .source {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .source a {
+            color: var(--toggle);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .source a:hover {
+            color: var(--toggle-hover);
         }
     </style>
 </head>
@@ -83,6 +139,44 @@
             <span class="sep">&middot;</span>
             <a href="https://linkedin.com/in/noahpetermann" target="_blank" rel="noopener">LinkedIn</a>
         </div>
+        <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
+        <div class="source">
+            <a href="https://github.com/neip-vc/website" target="_blank" rel="noopener">source</a>
+        </div>
     </main>
+    <script>
+        function applyTheme(mode) {
+            const btn = document.querySelector('.toggle');
+            if (mode === 'light') {
+                document.documentElement.classList.add('light');
+                btn.textContent = 'dark';
+            } else {
+                document.documentElement.classList.remove('light');
+                btn.textContent = 'light';
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.contains('light');
+            const next = isLight ? 'dark' : 'light';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+
+        // Saved preference > system preference
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            applyTheme('light');
+        }
+
+        // React to system changes (only if no manual override)
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'light' : 'dark');
+            }
+        });
+    </script>
 </body>
 </html>
