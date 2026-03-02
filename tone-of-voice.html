@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tone of Voice &mdash; Noah Petermann</title>
+    <meta name="description" content="On tone of voice in the age of AI.">
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>N</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --muted: #888;
+            --link: #999;
+            --link-hover: #e8e8e8;
+            --sep: #444;
+            --toggle: #555;
+            --toggle-hover: #999;
+            --section-border: #222;
+        }
+
+        :root.light {
+            --bg: #f5f5f5;
+            --text: #111;
+            --muted: #666;
+            --link: #666;
+            --link-hover: #111;
+            --sep: #bbb;
+            --toggle: #aaa;
+            --toggle-hover: #666;
+            --section-border: #ddd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        article {
+            max-width: 520px;
+            padding: 2rem;
+        }
+
+        .back {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+
+        .back:hover {
+            color: var(--text);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            transition: color 0.3s;
+        }
+
+        p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+
+        ul li {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        ul li::before {
+            content: "\2022";
+            color: var(--muted);
+            position: absolute;
+            left: 0;
+        }
+
+        a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--sep);
+            text-underline-offset: 2px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        a:hover {
+            text-decoration-color: var(--text);
+        }
+
+        .footer {
+            border-top: 1px solid var(--section-border);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--toggle);
+            transition: color 0.2s;
+            padding: 0;
+            line-height: 1;
+            vertical-align: baseline;
+        }
+
+        .toggle:hover {
+            color: var(--toggle-hover);
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <a href="/" class="back">&larr; back</a>
+
+        <h1>Tone of Voice</h1>
+        <p class="date">March 2, 2026</p>
+
+        <p>In recent weeks, months, year &mdash; I've fallen more and more in love with the concept of having a unique "tone of voice."</p>
+
+        <p>In a time where searching for "AI slop" has reached new all-time highs and pretty much all organic content seems to be written or influenced by AI, this for me is a last bastion of original writing. Just to be clear: this is not at all against the use of LLMs or "AI" (whatever that means these days &mdash; insert Modi meme here saying <em>Artificial Intelligence</em>); we're living in a new time. And rightfully so. I am the furthest thing from a person saying that everything used to be better in the good old times.</p>
+
+        <p>In fact, I'd assume 90% of my emails are written with at least some sort of assistance of AI. Which is absolutely fine for this kind of work. I'd propose splitting writing however into various subgroups:</p>
+
+        <ul>
+            <li><strong>Transactional &amp; legal</strong> &mdash; this is your average business email, proposal, contract, etc.</li>
+            <li><strong>Creative</strong> &mdash; this is your Kafka, your Dostoevsky, your Shakespeare, your Aristotle.</li>
+            <li><strong>Journalistic</strong> &mdash; deep diving on topics. I've become a huge fan of Mario Gabriele's <a href="https://www.readthegeneralist.com/" target="_blank" rel="noopener">The Generalist</a> here, falling in love with them ever since their series on Founders Fund (which made me pay for a Substack for the very first time).</li>
+            <li><strong>Academic</strong> &mdash; don't think I have to go too deep on this &mdash; you can check everything you need on <a href="https://nature.com" target="_blank" rel="noopener">nature.com</a>.</li>
+        </ul>
+
+        <p>For most of those tasks, using LLMs is amazing &amp; a real productivity hack.</p>
+
+        <p>However, as the conversation shifts more and more towards context &mdash; I'd propose treating tone of voice as one of the key pieces of context, because this is the way to not give up your identity, your edge, your way of thinking &mdash; even tho spellcheckers might flag it.</p>
+
+        <div class="footer">
+            <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
+        </div>
+    </article>
+    <script>
+        function applyTheme(mode) {
+            const btn = document.querySelector('.toggle');
+            if (mode === 'light') {
+                document.documentElement.classList.add('light');
+                btn.textContent = 'dark';
+            } else {
+                document.documentElement.classList.remove('light');
+                btn.textContent = 'light';
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.contains('light');
+            const next = isLight ? 'dark' : 'light';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            applyTheme('light');
+        }
+
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'light' : 'dark');
+            }
+        });
+    </script>
+</body>
+</html>
