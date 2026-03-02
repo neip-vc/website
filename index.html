@@ -282,7 +282,7 @@
             <a href="https://linkedin.com/in/noahpetermann" target="_blank" rel="noopener">LinkedIn</a>
         </div>
 
-        <p class="location"><span class="location-city">Berlin</span> <span class="detail">&mdash; main base</span></p>
+        <p class="location" id="location" style="cursor: default;"><span class="location-city">Berlin</span></p>
 
         <section>
             <h2>Building</h2>
@@ -347,7 +347,7 @@
             }
         });
 
-        // Location cycling
+        // Location cycling — starts on click
         const locations = [
             ['Berlin', 'main base'],
             ['Helsinki', 'recharging'],
@@ -356,20 +356,37 @@
             ['South-East Asia', 'exploring']
         ];
         let locIndex = 0;
+        let locCycling = false;
+        let locInterval;
         const cityEl = document.querySelector('.location-city');
-        const detailEl = document.querySelector('.location .detail');
+        const locationEl = document.getElementById('location');
 
-        setInterval(() => {
+        function cycleLocation() {
             cityEl.classList.add('fade');
-            detailEl.classList.add('fade');
+            const detailEl = locationEl.querySelector('.detail');
+            if (detailEl) detailEl.classList.add('fade');
             setTimeout(() => {
                 locIndex = (locIndex + 1) % locations.length;
                 cityEl.textContent = locations[locIndex][0];
-                detailEl.innerHTML = '&mdash; ' + locations[locIndex][1];
+                let detail = locationEl.querySelector('.detail');
+                if (!detail) {
+                    detail = document.createElement('span');
+                    detail.className = 'detail';
+                    locationEl.appendChild(document.createTextNode(' '));
+                    locationEl.appendChild(detail);
+                }
+                detail.innerHTML = '\u2014 ' + locations[locIndex][1];
                 cityEl.classList.remove('fade');
-                detailEl.classList.remove('fade');
+                detail.classList.remove('fade');
             }, 400);
-        }, 3000);
+        }
+
+        locationEl.addEventListener('click', () => {
+            if (locCycling) return;
+            locCycling = true;
+            cycleLocation();
+            locInterval = setInterval(cycleLocation, 3000);
+        });
 
         // Easter eggs
         const quotes = [
