@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes &mdash; Noah Petermann</title>
+    <meta name="robots" content="noindex">
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>N</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --muted: #888;
+            --sep: #444;
+            --section-border: #222;
+            --toggle: #555;
+            --toggle-hover: #999;
+        }
+
+        :root.light {
+            --bg: #f5f5f5;
+            --text: #111;
+            --muted: #666;
+            --sep: #bbb;
+            --section-border: #ddd;
+            --toggle: #aaa;
+            --toggle-hover: #666;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        main {
+            max-width: 520px;
+            padding: 2rem;
+        }
+
+        .back {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+
+        .back:hover {
+            color: var(--text);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+
+        blockquote {
+            border-left: 2px solid var(--section-border);
+            padding: 0.75rem 0 0.75rem 1rem;
+            margin-bottom: 1.25rem;
+            transition: border-color 0.3s;
+        }
+
+        blockquote p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        blockquote cite {
+            display: block;
+            font-size: 0.75rem;
+            font-style: normal;
+            color: var(--muted);
+            margin-top: 0.35rem;
+        }
+
+        .footer {
+            border-top: 1px solid var(--section-border);
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--toggle);
+            transition: color 0.2s;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toggle:hover {
+            color: var(--toggle-hover);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <a href="/" class="back">&larr; back</a>
+
+        <h1>Quotes</h1>
+        <p class="subtitle">You found the hidden page.</p>
+
+        <blockquote>
+            <p>Die Philosophen haben die Welt nur verschieden interpretirt; es kommt aber darauf an, sie zu ver&auml;ndern.</p>
+            <cite>&mdash; Karl Marx</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>True character is revealed in the choices a human being makes under pressure.</p>
+            <cite>&mdash; Robert McKee</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Bescheidenheit bei mittelm&auml;&szlig;igen F&auml;higkeiten ist blo&szlig;e Ehrlichkeit; bei gro&szlig;en Talenten ist sie Heuchelei.</p>
+            <cite>&mdash; Arthur Schopenhauer</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>History will absolve me.</p>
+            <cite>&mdash; Fidel Castro</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Die Definition von Wahnsinn ist: immer wieder das Gleiche zu tun und andere Ergebnisse zu erwarten.</p>
+            <cite>&mdash; Albert Einstein</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Actions have consequences.</p>
+            <cite>&mdash; Unknown</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Gewissen Menschen gegen&uuml;ber kann man seine Intelligenz nur auf eine Art beweisen, n&auml;mlich, indem man nicht mehr mit ihnen redet.</p>
+            <cite>&mdash; Arthur Schopenhauer</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Inspiring people is the definition of success.</p>
+            <cite>&mdash; Kanye West</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.</p>
+            <cite>&mdash; Arthur Schopenhauer</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Never interrupt your enemy when he is making a mistake.</p>
+            <cite>&mdash; Napoleon Bonaparte</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Keiner von euch hat mich erschaffen, ich hab mich selbst gemacht.</p>
+            <cite>&mdash; Alpa Gun &mdash; Meine Story (100 Bars)</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Was k&uuml;mmert mich mein Geschw&auml;tz von gestern.</p>
+            <cite>&mdash; Konrad Adenauer</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Success is not final. Failure is not fatal. It is the courage to continue that counts.</p>
+            <cite>&mdash; Winston Churchill</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Excellence is the capacity to take pain.</p>
+            <cite>&mdash; Isadore Sharp</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>We have found the enemy and it is us.</p>
+            <cite>&mdash; Walt Kelly</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>It&rsquo;s not what we don&rsquo;t know that gets us in trouble. It&rsquo;s what we know for sure that just ain&rsquo;t so.</p>
+            <cite>&mdash; Mark Twain</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>The primary battle between every startup and incumbent is whether the startup gets distribution before the incumbent gets innovation.</p>
+            <cite>&mdash; Alex Rampell</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>A person who thinks all the time has nothing to think about except thoughts.</p>
+            <cite>&mdash; Alan Watts</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>Know the rules well, so you can break them effectively.</p>
+            <cite>&mdash; Dalai Lama XIV</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>I&rsquo;m living in the future so the present is my past. My presence is a present, kiss my ass.</p>
+            <cite>&mdash; Kanye West &mdash; Monster</cite>
+        </blockquote>
+
+        <blockquote>
+            <p>The greatest danger for most of us is not that our aim is too high and we miss it, but that it is too low and we reach it.</p>
+            <cite>&mdash; Michelangelo</cite>
+        </blockquote>
+
+        <div class="footer">
+            <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
+        </div>
+    </main>
+    <script>
+        function applyTheme(mode) {
+            const btn = document.querySelector('.toggle');
+            if (mode === 'light') {
+                document.documentElement.classList.add('light');
+                btn.textContent = 'dark';
+            } else {
+                document.documentElement.classList.remove('light');
+                btn.textContent = 'light';
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.contains('light');
+            const next = isLight ? 'dark' : 'light';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            applyTheme('light');
+        }
+
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'light' : 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

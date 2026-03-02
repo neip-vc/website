@@ -243,12 +243,37 @@
         .source a:hover {
             color: var(--toggle-hover);
         }
+
+        .quote-display {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: var(--muted);
+            max-width: 400px;
+            margin: 0 auto 0.5rem;
+            min-height: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease, color 0.3s;
+            text-align: center;
+        }
+
+        .quote-display.visible {
+            opacity: 1;
+        }
+
+        .quote-display .quote-author {
+            font-style: normal;
+            font-size: 0.7rem;
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--sep);
+        }
     </style>
 </head>
 <body>
     <main>
-        <h1>Noah Petermann</h1>
-        <p class="tagline">22. Founder, Investor, Ponderer.</p>
+        <h1 id="name">Noah Petermann</h1>
+        <p class="tagline">22<span id="dot" style="cursor: default;">.</span> Founder, Investor, Ponderer.</p>
+        <p id="quote-display" class="quote-display"></p>
         <div class="links">
             <a href="mailto:noah@neip.vc">noah@neip.vc</a>
             <span class="sep">&middot;</span>
@@ -345,6 +370,60 @@
                 detailEl.classList.remove('fade');
             }, 400);
         }, 3000);
+
+        // Easter eggs
+        const quotes = [
+            ['Die Philosophen haben die Welt nur verschieden interpretirt; es kommt aber darauf an, sie zu ver\u00e4ndern.', 'Karl Marx'],
+            ['True character is revealed in the choices a human being makes under pressure.', 'Robert McKee'],
+            ['Bescheidenheit bei mittelm\u00e4\u00dfigen F\u00e4higkeiten ist blo\u00dfe Ehrlichkeit; bei gro\u00dfen Talenten ist sie Heuchelei.', 'Arthur Schopenhauer'],
+            ['History will absolve me.', 'Fidel Castro'],
+            ['Die Definition von Wahnsinn ist: immer wieder das Gleiche zu tun und andere Ergebnisse zu erwarten.', 'Albert Einstein'],
+            ['Actions have consequences.', 'Unknown'],
+            ['Gewissen Menschen gegen\u00fcber kann man seine Intelligenz nur auf eine Art beweisen, n\u00e4mlich, indem man nicht mehr mit ihnen redet.', 'Arthur Schopenhauer'],
+            ['Inspiring people is the definition of success.', 'Kanye West'],
+            ['Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.', 'Arthur Schopenhauer'],
+            ['Never interrupt your enemy when he is making a mistake.', 'Napoleon Bonaparte'],
+            ['Keiner von euch hat mich erschaffen, ich hab mich selbst gemacht.', 'Alpa Gun'],
+            ['Was k\u00fcmmert mich mein Geschw\u00e4tz von gestern.', 'Konrad Adenauer'],
+            ['Success is not final. Failure is not fatal. It is the courage to continue that counts.', 'Winston Churchill'],
+            ['Excellence is the capacity to take pain.', 'Isadore Sharp'],
+            ['We have found the enemy and it is us.', 'Walt Kelly'],
+            ["It's not what we don't know that gets us in trouble. It's what we know for sure that just ain't so.", 'Mark Twain'],
+            ['The primary battle between every startup and incumbent is whether the startup gets distribution before the incumbent gets innovation.', 'Alex Rampell'],
+            ['A person who thinks all the time has nothing to think about except thoughts.', 'Alan Watts'],
+            ['Know the rules well, so you can break them effectively.', 'Dalai Lama XIV'],
+            ["I'm living in the future so the present is my past. My presence is a present, kiss my ass.", 'Kanye West'],
+            ['The greatest danger for most of us is not that our aim is too high and we miss it, but that it is too low and we reach it.', 'Michelangelo']
+        ];
+
+        // Click the dot — show random quote
+        const dot = document.getElementById('dot');
+        const quoteDisplay = document.getElementById('quote-display');
+        let lastQuoteIndex = -1;
+
+        dot.addEventListener('click', () => {
+            quoteDisplay.classList.remove('visible');
+            setTimeout(() => {
+                let idx;
+                do { idx = Math.floor(Math.random() * quotes.length); } while (idx === lastQuoteIndex);
+                lastQuoteIndex = idx;
+                quoteDisplay.innerHTML = '"' + quotes[idx][0] + '"<span class="quote-author">\u2014 ' + quotes[idx][1] + '</span>';
+                quoteDisplay.classList.add('visible');
+            }, 300);
+        });
+
+        // Click name 5 times — go to quotes
+        let nameClicks = 0;
+        let nameTimer;
+        document.getElementById('name').addEventListener('click', () => {
+            nameClicks++;
+            clearTimeout(nameTimer);
+            if (nameClicks >= 5) {
+                nameClicks = 0;
+                window.location.href = '/quotes';
+            }
+            nameTimer = setTimeout(() => { nameClicks = 0; }, 2000);
+        });
     </script>
 </body>
 </html>
