@@ -185,11 +185,24 @@
             font-size: 0.8rem;
         }
 
+        .reading-category {
+            font-size: 0.7rem;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.75rem;
+            margin-bottom: 0;
+        }
+
+        .reading-category:first-of-type {
+            margin-top: 0.5rem;
+        }
+
         .reading-links {
             display: flex;
             flex-wrap: wrap;
             gap: 0.25rem 0.75rem;
-            margin-top: 0.75rem;
+            margin-top: 0.25rem;
         }
 
         .reading-links a {
@@ -291,11 +304,17 @@
 
         <section>
             <h2>Thinking</h2>
-            <p>Currently reading about Schopenhauer's Will, homeostasis, eternal recurrence, and behavioral finance.</p>
+            <p class="reading-category">Philosophy / Nature of Being</p>
             <div class="reading-links">
-                <a href="https://plato.stanford.edu/entries/schopenhauer/" target="_blank" rel="noopener">Schopenhauer</a>
+                <a href="https://plato.stanford.edu/entries/schopenhauer/" target="_blank" rel="noopener">Schopenhauer's Will</a>
+                <a href="https://plato.stanford.edu/entries/nietzsche/" target="_blank" rel="noopener">Eternal Recurrence</a>
+            </div>
+            <p class="reading-category">Biology</p>
+            <div class="reading-links">
                 <a href="https://en.wikipedia.org/wiki/Homeostasis" target="_blank" rel="noopener">Homeostasis</a>
-                <a href="https://plato.stanford.edu/entries/nietzsche/" target="_blank" rel="noopener">Nietzsche</a>
+            </div>
+            <p class="reading-category">Economics</p>
+            <div class="reading-links">
                 <a href="https://en.wikipedia.org/wiki/Behavioral_economics" target="_blank" rel="noopener">Behavioral Finance</a>
             </div>
             <div class="reading-links" style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--section-border);">
