@@ -6,5 +6,11 @@
       "destination": "https://zeeg.me/aniva/noah",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/anna",
+      "destination": "/api/anna"
+    }
   ]
 }

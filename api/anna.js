@@ -1,0 +1,18 @@
+export default function handler(req, res) {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.end(`<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анна</title>
+<meta name="robots" content="noindex">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#0a0a0a;color:#e8e8e8;min-height:100vh;display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased}
+p{font-size:1.25rem;letter-spacing:0.02em}
+</style>
+</head>
+<body><p>Я тебя люблю</p></body>
+</html>`);
+}
