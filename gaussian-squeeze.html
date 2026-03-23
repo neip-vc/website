@@ -304,11 +304,11 @@
                 <canvas id="chart" width="520" height="300"></canvas>
                 <div class="legend">
                     <div class="legend-item">
-                        <div class="legend-swatch" style="background: rgba(255,255,255,0.25);"></div>
+                        <div class="legend-swatch" id="swatch-pre"></div>
                         <span>Pre-AI distribution</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-swatch" style="background: rgba(120,200,255,0.8);"></div>
+                        <div class="legend-swatch" id="swatch-post"></div>
                         <span>Post-AI distribution</span>
                     </div>
                 </div>
@@ -436,6 +436,21 @@
             const isLight = document.documentElement.classList.contains('light');
             ctx.clearRect(0, 0, W, H);
 
+            // Theme-aware palette
+            const preStroke = isLight ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.25)';
+            const preFill = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+            const postStroke = isLight ? 'rgba(30,120,200,0.85)' : 'rgba(120,200,255,0.8)';
+            const postFillTop = isLight ? 'rgba(30,120,200,0.18)' : 'rgba(120,200,255,0.15)';
+            const postFillBot = isLight ? 'rgba(30,120,200,0.03)' : 'rgba(120,200,255,0.02)';
+            const arrowColor = isLight ? 'rgba(30,120,200,0.5)' : 'rgba(120,200,255,0.4)';
+            const arrowLabel = isLight ? 'rgba(30,120,200,0.65)' : 'rgba(120,200,255,0.5)';
+            const tailLine = isLight ? 'rgba(200,120,30,0.4)' : 'rgba(255,180,80,0.3)';
+            const tailLabel = isLight ? 'rgba(200,120,30,0.7)' : 'rgba(255,180,80,0.5)';
+
+            // Update legend swatches
+            document.getElementById('swatch-pre').style.background = preStroke;
+            document.getElementById('swatch-post').style.background = postStroke;
+
             const mu1 = 0, sigma1 = 1.8;
             const mu2 = mu1 + t * 0.7;
             const sigma2 = sigma1 - t * 0.9;
@@ -451,7 +466,7 @@
             maxY *= 1.12;
 
             // Grid
-            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.04)';
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.04)';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 4; i++) {
                 const y = padT + (plotH / 4) * i;
@@ -462,14 +477,14 @@
             }
 
             // X axis
-            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.1)';
             ctx.beginPath();
             ctx.moveTo(padL, padT + plotH);
             ctx.lineTo(padL + plotW, padT + plotH);
             ctx.stroke();
 
             // Labels
-            ctx.fillStyle = isLight ? '#999' : '#444';
+            ctx.fillStyle = isLight ? '#888' : '#555';
             ctx.font = '10px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
             ctx.textAlign = 'center';
             const labels = ['Terrible', '', 'Below avg', '', 'Average', '', 'Above avg', '', 'Exceptional'];
@@ -485,7 +500,7 @@
             for (let x = xMin; x <= xMax; x += 0.02) ctx.lineTo(toX(x), toY(gaussian(x, mu1, sigma1), maxY));
             ctx.lineTo(toX(xMax), toY(0, maxY));
             ctx.closePath();
-            ctx.fillStyle = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)';
+            ctx.fillStyle = preFill;
             ctx.fill();
 
             // Pre-AI stroke
@@ -494,7 +509,7 @@
                 const cx = toX(x), cy = toY(gaussian(x, mu1, sigma1), maxY);
                 if (x === xMin) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
             }
-            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.25)';
+            ctx.strokeStyle = preStroke;
             ctx.lineWidth = 2;
             ctx.stroke();
 
@@ -505,8 +520,8 @@
             ctx.lineTo(toX(xMax), toY(0, maxY));
             ctx.closePath();
             const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
-            grad.addColorStop(0, 'rgba(120,200,255,0.15)');
-            grad.addColorStop(1, 'rgba(120,200,255,0.02)');
+            grad.addColorStop(0, postFillTop);
+            grad.addColorStop(1, postFillBot);
             ctx.fillStyle = grad;
             ctx.fill();
 
@@ -516,7 +531,7 @@
                 const cx = toX(x), cy = toY(gaussian(x, mu2, sigma2), maxY);
                 if (x === xMin) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
             }
-            ctx.strokeStyle = 'rgba(120,200,255,0.8)';
+            ctx.strokeStyle = postStroke;
             ctx.lineWidth = 2.5;
             ctx.stroke();
 
@@ -525,7 +540,7 @@
                 const tailStart = mu2 + 2.2 * sigma2;
                 const tailX = toX(tailStart);
                 ctx.setLineDash([4, 4]);
-                ctx.strokeStyle = 'rgba(255,180,80,0.3)';
+                ctx.strokeStyle = tailLine;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(tailX, padT + 10);
@@ -533,7 +548,7 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
-                ctx.fillStyle = 'rgba(255,180,80,0.5)';
+                ctx.fillStyle = tailLabel;
                 ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
                 ctx.textAlign = 'left';
                 ctx.fillText('\u2190 value zone', tailX + 6, padT + 18);
@@ -544,14 +559,14 @@
                 const arrowY = padT + plotH - 12;
                 const fromX = toX(mu1);
                 const arrowToX = toX(mu2);
-                ctx.strokeStyle = 'rgba(120,200,255,0.4)';
+                ctx.strokeStyle = arrowColor;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(fromX, arrowY);
                 ctx.lineTo(arrowToX - 4, arrowY);
                 ctx.stroke();
 
-                ctx.fillStyle = 'rgba(120,200,255,0.4)';
+                ctx.fillStyle = arrowColor;
                 ctx.beginPath();
                 ctx.moveTo(arrowToX, arrowY);
                 ctx.lineTo(arrowToX - 6, arrowY - 3);
@@ -559,7 +574,7 @@
                 ctx.closePath();
                 ctx.fill();
 
-                ctx.fillStyle = 'rgba(120,200,255,0.5)';
+                ctx.fillStyle = arrowLabel;
                 ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('mean shifts \u2192', (fromX + arrowToX) / 2, arrowY - 7);
