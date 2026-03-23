@@ -56,8 +56,9 @@
         }
 
         article {
+            width: 100%;
             max-width: 520px;
-            padding: 2rem;
+            padding: 2rem 1.25rem;
         }
 
         .back {
@@ -145,7 +146,6 @@
 
         .chart-container canvas {
             display: block;
-            margin: 0 auto;
         }
 
         .legend {
@@ -214,14 +214,22 @@
             justify-content: space-between;
             font-size: 0.65rem;
             color: var(--muted);
-            padding: 0 8px;
+            padding: 0;
             transition: color 0.3s;
         }
 
         .annotation {
-            max-width: 140px;
+            flex: 1;
             text-align: center;
             line-height: 1.4;
+            padding: 0 4px;
+        }
+
+        @media (max-width: 420px) {
+            .annotations { font-size: 0.55rem; }
+            .legend { gap: 16px; font-size: 0.65rem; }
+            .slider-container { gap: 8px; font-size: 0.65rem; }
+            input[type="range"] { width: 120px; }
         }
 
         .footer {
@@ -301,7 +309,7 @@
         <div class="chart-wrapper">
             <div class="chart-container">
                 <h3>Distribution of Work Output Quality</h3>
-                <canvas id="chart" width="520" height="300"></canvas>
+                <canvas id="chart"></canvas>
                 <div class="legend">
                     <div class="legend-item">
                         <div class="legend-swatch" id="swatch-pre"></div>
@@ -384,8 +392,8 @@
                 document.documentElement.classList.remove('light');
                 btn.textContent = 'light';
             }
-            // Redraw chart with theme
-            if (typeof drawChart === 'function') drawChart();
+            // Redraw chart with theme (chartReady set after canvas init)
+            if (window.chartReady) drawChart();
         }
 
         function toggleTheme() {
@@ -414,17 +422,28 @@
         const slider = document.getElementById('squeeze');
         const sliderVal = document.getElementById('squeeze-val');
 
-        const dpr = window.devicePixelRatio || 1;
-        const W = 520, H = 300;
-        canvas.width = W * dpr;
-        canvas.height = H * dpr;
-        ctx.scale(dpr, dpr);
-        canvas.style.width = W + 'px';
-        canvas.style.height = H + 'px';
+        let W, H, padL, padR, padT, padB, plotW, plotH;
 
-        const padL = 30, padR = 30, padT = 15, padB = 40;
-        const plotW = W - padL - padR;
-        const plotH = H - padT - padB;
+        function sizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const container = canvas.parentElement;
+            W = Math.min(520, container.clientWidth);
+            H = Math.round(W * (300 / 520));
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            padL = W < 400 ? 20 : 30;
+            padR = W < 400 ? 20 : 30;
+            padT = 15;
+            padB = W < 400 ? 32 : 40;
+            plotW = W - padL - padR;
+            plotH = H - padT - padB;
+        }
+
+        sizeCanvas();
+        window.addEventListener('resize', function() { sizeCanvas(); drawChart(); });
 
         function gaussian(x, mu, sigma) {
             const exp = -0.5 * Math.pow((x - mu) / sigma, 2);
@@ -484,10 +503,14 @@
             ctx.stroke();
 
             // Labels
+            const fontSize = W < 400 ? 8 : 10;
+            const smallFont = W < 400 ? 7 : 9;
             ctx.fillStyle = isLight ? '#888' : '#555';
-            ctx.font = '10px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+            ctx.font = fontSize + 'px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
             ctx.textAlign = 'center';
-            const labels = ['Terrible', '', 'Below avg', '', 'Average', '', 'Above avg', '', 'Exceptional'];
+            const labels = W < 360
+                ? ['Terrible', '', '', '', 'Average', '', '', '', 'Exceptional']
+                : ['Terrible', '', 'Below avg', '', 'Average', '', 'Above avg', '', 'Exceptional'];
             for (let i = 0; i < labels.length; i++) {
                 if (!labels[i]) continue;
                 const x = xMin + (i / (labels.length - 1)) * (xMax - xMin);
@@ -549,7 +572,7 @@
                 ctx.setLineDash([]);
 
                 ctx.fillStyle = tailLabel;
-                ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+                ctx.font = smallFont + 'px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
                 ctx.textAlign = 'left';
                 ctx.fillText('\u2190 value zone', tailX + 6, padT + 18);
             }
@@ -575,7 +598,7 @@
                 ctx.fill();
 
                 ctx.fillStyle = arrowLabel;
-                ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+                ctx.font = smallFont + 'px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('mean shifts \u2192', (fromX + arrowToX) / 2, arrowY - 7);
             }
@@ -587,6 +610,7 @@
         }
 
         slider.addEventListener('input', updateChart);
+        window.chartReady = true;
         updateChart();
     </script>
 </body>
