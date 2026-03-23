@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gaussian Squeeze &mdash; Noah Petermann</title>
+    <meta name="description" content="AI is compressing the distribution of work output. It raises the floor, barely moves the ceiling, and hollows out the variance.">
+    <meta property="og:title" content="The Gaussian Squeeze — Noah Petermann">
+    <meta property="og:description" content="AI is compressing the distribution of work output. It raises the floor, barely moves the ceiling, and hollows out the variance.">
+    <meta property="og:url" content="https://neip.vc/gaussian-squeeze">
+    <meta property="og:type" content="article">
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>N</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --muted: #888;
+            --link: #999;
+            --link-hover: #e8e8e8;
+            --sep: #444;
+            --toggle: #555;
+            --toggle-hover: #999;
+            --section-border: #222;
+        }
+
+        :root.light {
+            --bg: #f5f5f5;
+            --text: #111;
+            --muted: #666;
+            --link: #666;
+            --link-hover: #111;
+            --sep: #bbb;
+            --toggle: #aaa;
+            --toggle-hover: #666;
+            --section-border: #ddd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        article {
+            max-width: 520px;
+            padding: 2rem;
+        }
+
+        .back {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+
+        .back:hover {
+            color: var(--text);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            transition: color 0.3s;
+        }
+
+        p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--sep);
+            text-underline-offset: 2px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        a:hover {
+            text-decoration-color: var(--text);
+        }
+
+        /* Interactive chart */
+        .chart-wrapper {
+            margin: 2rem -1rem;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid var(--section-border);
+            border-bottom: 1px solid var(--section-border);
+            transition: border-color 0.3s;
+        }
+
+        .chart-wrapper h3 {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+            text-align: center;
+            transition: color 0.3s;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .chart-container canvas {
+            width: 100%;
+            height: auto;
+        }
+
+        .legend {
+            display: flex;
+            gap: 28px;
+            margin-top: 16px;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+            transition: color 0.3s;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-swatch {
+            width: 24px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .slider-container {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            transition: color 0.3s;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 160px;
+            height: 3px;
+            background: var(--sep);
+            border-radius: 2px;
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--text);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .value-label {
+            font-variant-numeric: tabular-nums;
+            min-width: 36px;
+        }
+
+        .annotations {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: var(--muted);
+            padding: 0 8px;
+            transition: color 0.3s;
+        }
+
+        .annotation {
+            max-width: 140px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .footer {
+            border-top: 1px solid var(--section-border);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--toggle);
+            transition: color 0.2s;
+            padding: 0;
+            line-height: 1;
+            vertical-align: baseline;
+        }
+
+        .toggle:hover {
+            color: var(--toggle-hover);
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <a href="/" class="back">&larr; back</a>
+
+        <h1>The Gaussian Squeeze</h1>
+        <p class="date">March 23, 2026</p>
+
+        <p>Most discourse around AI and labor falls into one of two camps. Either AI replaces everyone and we're headed for mass unemployment, or AI is just a tool and people will adapt like they always have. Both are lazy. Both are wrong. The interesting question is not <em>whether</em> AI replaces people, but <em>which kind of work</em> it structurally eliminates &mdash; and what that does to the shape of output in an economy.</p>
+
+        <p>I want to make a specific claim: AI is compressing the distribution of work output. It is raising the floor, barely moving the ceiling, and hollowing out the variance. And the downstream effects of this compression are almost entirely misunderstood.</p>
+
+        <h2>The semi-knowledge layer</h2>
+
+        <p>There's a category of work I'd call non-repetitive semi-knowledge. It's not deep expertise &mdash; the surgeon, the compiler engineer, the trade lawyer. And it's not mechanical repetition &mdash; the assembly line, the data entry clerk. It sits in between: work that requires some context, some judgment, some synthesis, but never enough of any one domain to constitute real depth.</p>
+
+        <p>Think of the generalist chief of staff who sits in every meeting, takes notes, and "keeps things moving." The operations person who builds dashboards from templates. The executive assistant who drafts emails, summarizes reports, and manages information flow. The junior strategy analyst who pulls comps and formats decks.</p>
+
+        <p>These roles exist because information is expensive to move between people, and humans have finite bandwidth. You need someone to sit at the junction points, absorb context, and route it. The semi-knowledge layer is, in essence, a human middleware stack.</p>
+
+        <p>Large language models are a near-perfect substitute for this. They absorb context without fatigue, synthesize across domains without bandwidth constraints, and produce structured output on demand. The replacement isn't hypothetical or five years out. It's happening now, in every company that's paying attention.</p>
+
+        <h2>What this means for organizations</h2>
+
+        <p>The implication is not that companies become one founder and a fleet of AI agents. You still need humans &mdash; probably somewhere between a handful and twenty for most startups doing non-trivial things. But you need them for a fundamentally different reason than before.</p>
+
+        <p>You need domain experts with decision-making authority. People who know a domain well enough to have taste &mdash; to look at AI output and catch when it's subtly, confidently wrong. And you need them to operate with real authority, not as advisors or reviewers, but as principals who own outcomes.</p>
+
+        <p>The organizational structure that emerges from this looks nothing like the hierarchies we've been building. It's flat by necessity, not ideology. One person with deep expertise manages AI agents for execution in their domain, and collaborates laterally with peers who do the same in different domains. No delegation chains. No middle management translating context between layers. No weekly alignment meetings that exist because the org chart is too tall for information to travel unimpeded.</p>
+
+        <p>The coordination cost that justified most organizational complexity is being absorbed by AI. What's left is the part that was always supposed to be the point: people with knowledge making decisions.</p>
+
+        <h2>The distribution argument</h2>
+
+        <p>Here's the part I find most interesting, and the part almost nobody is discussing.</p>
+
+        <p>Consider the aggregate distribution of work output across an economy &mdash; or even within a single company &mdash; as approximately Gaussian. There's a mean, there's a standard deviation, there's a spread of quality from terrible to exceptional.</p>
+
+        <p>AI is doing something structurally significant to this distribution.</p>
+
+        <p>The mean is shifting right. This is the obvious part. Your worst first draft is now competent. The most junior person's analysis has proper structure. Cold emails are grammatically correct and superficially personalized. The floor is rising everywhere, and it's rising fast.</p>
+
+        <p>But the standard deviation is compressing. The variance in output quality is shrinking. And this is the part that matters.</p>
+
+        <p>When you give everyone access to a tool that produces consistently above-average output, you don't get a world where everything is excellent. You get a world where everything is the same. The terrible stuff gets pulled up toward the mean. But the exceptional stuff &mdash; the work that sat three or four standard deviations out &mdash; doesn't get more exceptional. If anything, it gets harder to distinguish from the increasingly competent middle.</p>
+
+        <!-- Interactive chart -->
+        <div class="chart-wrapper">
+            <div class="chart-container">
+                <h3>Distribution of Work Output Quality</h3>
+                <canvas id="chart" width="520" height="300"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-swatch" style="background: rgba(255,255,255,0.25);"></div>
+                        <span>Pre-AI distribution</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-swatch" style="background: rgba(120,200,255,0.8);"></div>
+                        <span>Post-AI distribution</span>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <span>AI adoption</span>
+                    <input type="range" id="squeeze" min="0" max="100" value="75">
+                    <span class="value-label" id="squeeze-val">75%</span>
+                </div>
+                <div class="annotations">
+                    <div class="annotation">Catastrophically bad work disappears</div>
+                    <div class="annotation">The crowded middle &mdash; polished, competent, indistinguishable</div>
+                    <div class="annotation">Tail events: where all the value lives</div>
+                </div>
+            </div>
+        </div>
+
+        <p>I see this concretely in VC deal flow. Every deck is well-structured. Every market sizing follows the right framework. Every competitive analysis hits the expected categories. The quality floor has risen dramatically. And yet the signal-to-noise ratio feels worse, because the noise is now high-quality noise. Polished mediocrity is harder to filter than obvious mediocrity.</p>
+
+        <p>We are entering an era of radical convergence toward the mean at scale, and most people are celebrating it because the average got better. But the average was never where value was created.</p>
+
+        <h2>Tails are all that matter</h2>
+
+        <p>In any competitive system &mdash; a market, an organization, an economy &mdash; disproportionate value accrues to the tails of the distribution. The outlier product decision. The strategy that violates every framework. The insight that couldn't have been derived from existing data because it's about something that hasn't happened yet.</p>
+
+        <p>These are tail events. And AI is, quite literally, a regression-to-the-mean machine.</p>
+
+        <p>This isn't a metaphor. It's the mechanism. A language model predicts the most probable next token given its training distribution. That is maximum likelihood estimation. It is architecturally optimized to produce the expected value, not the unexpected one. You can push it with clever prompting, higher temperature, or adversarial techniques, but the gravitational pull of the training distribution is always there. Asking an LLM for a genuine tail event is like asking a census to produce an outlier. The entire apparatus is designed to converge.</p>
+
+        <p>The things that actually change a company's trajectory &mdash; or a market, or a field &mdash; are precisely the things that sit outside what any model trained on historical data would predict. They come from someone seeing a pattern that isn't in the distribution, or deliberately breaking a pattern that is.</p>
+
+        <h2>The case for junior people</h2>
+
+        <p>This is where the standard narrative inverts.</p>
+
+        <p>The prevailing take is that AI replaces junior people first. They do the "simple" work. They're the most substitutable. Cut them, save burn, let AI handle the grunt work.</p>
+
+        <p>This is wrong, or at least far more wrong than people realize.</p>
+
+        <p>What AI replaces is <em>average work</em>, not junior work. Those overlap, but they're not the same thing. A senior person producing templated strategy decks is doing average work. A junior person asking a question so naive it reframes the entire problem is not.</p>
+
+        <p>The real argument for junior people in an AI-compressed world is an options-theoretic one. Juniors are cheap optionality on tail events.</p>
+
+        <p>They haven't been pattern-matched into conventional wisdom. They haven't internalized the frameworks that AI was trained on and can now reproduce infinitely. They don't know what's "supposed" to work, which means they haven't pruned their hypothesis space to match the consensus distribution. Their priors are messy, uncalibrated, and occasionally wrong in exactly the right way.</p>
+
+        <p>Most of the time, this produces noise. The dumb question that's actually just dumb. The unconventional take that's unconventional because it's wrong. But in a world where the middle of the distribution is automated &mdash; where competent, framework-adherent, slightly-above-average output is essentially free &mdash; the expected value of that optionality changes. When the baseline is commoditized, the variance premium goes up.</p>
+
+        <p>This is not a romantic argument about the wisdom of youth. It's a portfolio construction argument. If AI gives you infinite median-quality output at near-zero marginal cost, the scarce resource is no longer competence. It's deviation from competence in the right direction. And you can't generate that deviation by prompting a model that was trained to converge.</p>
+
+        <h2>What to actually do</h2>
+
+        <p>If you're building a company right now, the implications are fairly concrete.</p>
+
+        <p>Eliminate the coordination layer. The roles that existed to move information between people, maintain alignment, summarize and synthesize across teams &mdash; that's AI work now. It does it better, faster, without context loss, and without needing a skip-level to stay engaged.</p>
+
+        <p>Hire domain experts with authority. Not advisors. Not consultants. People who own decisions in their area and have enough depth to exercise taste over AI output. Taste &mdash; the ability to distinguish subtly wrong from subtly right &mdash; is the skill that AI makes more valuable, not less. It's also the skill that's hardest to acquire without genuine depth.</p>
+
+        <p>Preserve optionality on the tails. Keep people in the room who haven't been optimized yet. Whose value isn't in reliable execution &mdash; AI handles that now &mdash; but in the chance that they see something no model, and no pattern-matched senior, would see. The hit rate will be low. The expected value, in a variance-starved world, will be high.</p>
+
+        <p>The companies that define the next era won't be the ones with the most sophisticated AI workflows. They'll be the ones that understood what AI actually does to distributions &mdash; and built for the tails while everyone else optimized for the mean.</p>
+
+        <div class="footer">
+            <button class="toggle" onclick="toggleTheme()" aria-label="Toggle theme">light</button>
+        </div>
+    </article>
+    <script>
+        // Theme
+        function applyTheme(mode) {
+            const btn = document.querySelector('.toggle');
+            if (mode === 'light') {
+                document.documentElement.classList.add('light');
+                btn.textContent = 'dark';
+            } else {
+                document.documentElement.classList.remove('light');
+                btn.textContent = 'light';
+            }
+            // Redraw chart with theme
+            if (typeof drawChart === 'function') drawChart();
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.contains('light');
+            const next = isLight ? 'dark' : 'light';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        }
+
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            applyTheme('light');
+        }
+
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'light' : 'dark');
+            }
+        });
+
+        // Interactive chart
+        const canvas = document.getElementById('chart');
+        const ctx = canvas.getContext('2d');
+        const slider = document.getElementById('squeeze');
+        const sliderVal = document.getElementById('squeeze-val');
+
+        const dpr = window.devicePixelRatio || 1;
+        const W = 520, H = 300;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+
+        const padL = 30, padR = 30, padT = 15, padB = 40;
+        const plotW = W - padL - padR;
+        const plotH = H - padT - padB;
+
+        function gaussian(x, mu, sigma) {
+            const exp = -0.5 * Math.pow((x - mu) / sigma, 2);
+            return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(exp);
+        }
+
+        function drawChart() {
+            const t = parseInt(slider.value) / 100;
+            const isLight = document.documentElement.classList.contains('light');
+            ctx.clearRect(0, 0, W, H);
+
+            const mu1 = 0, sigma1 = 1.8;
+            const mu2 = mu1 + t * 0.7;
+            const sigma2 = sigma1 - t * 0.9;
+            const xMin = -5, xMax = 5;
+
+            function toX(x) { return padL + ((x - xMin) / (xMax - xMin)) * plotW; }
+            function toY(y, maxY) { return padT + plotH - (y / maxY) * plotH; }
+
+            let maxY = 0;
+            for (let x = xMin; x <= xMax; x += 0.01) {
+                maxY = Math.max(maxY, gaussian(x, mu1, sigma1), gaussian(x, mu2, sigma2));
+            }
+            maxY *= 1.12;
+
+            // Grid
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.04)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = padT + (plotH / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(padL, y);
+                ctx.lineTo(padL + plotW, y);
+                ctx.stroke();
+            }
+
+            // X axis
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            ctx.beginPath();
+            ctx.moveTo(padL, padT + plotH);
+            ctx.lineTo(padL + plotW, padT + plotH);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = isLight ? '#999' : '#444';
+            ctx.font = '10px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            const labels = ['Terrible', '', 'Below avg', '', 'Average', '', 'Above avg', '', 'Exceptional'];
+            for (let i = 0; i < labels.length; i++) {
+                if (!labels[i]) continue;
+                const x = xMin + (i / (labels.length - 1)) * (xMax - xMin);
+                ctx.fillText(labels[i], toX(x), padT + plotH + 20);
+            }
+
+            // Pre-AI fill
+            ctx.beginPath();
+            ctx.moveTo(toX(xMin), toY(0, maxY));
+            for (let x = xMin; x <= xMax; x += 0.02) ctx.lineTo(toX(x), toY(gaussian(x, mu1, sigma1), maxY));
+            ctx.lineTo(toX(xMax), toY(0, maxY));
+            ctx.closePath();
+            ctx.fillStyle = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)';
+            ctx.fill();
+
+            // Pre-AI stroke
+            ctx.beginPath();
+            for (let x = xMin; x <= xMax; x += 0.02) {
+                const cx = toX(x), cy = toY(gaussian(x, mu1, sigma1), maxY);
+                if (x === xMin) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+            }
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.25)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Post-AI fill
+            ctx.beginPath();
+            ctx.moveTo(toX(xMin), toY(0, maxY));
+            for (let x = xMin; x <= xMax; x += 0.02) ctx.lineTo(toX(x), toY(gaussian(x, mu2, sigma2), maxY));
+            ctx.lineTo(toX(xMax), toY(0, maxY));
+            ctx.closePath();
+            const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+            grad.addColorStop(0, 'rgba(120,200,255,0.15)');
+            grad.addColorStop(1, 'rgba(120,200,255,0.02)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Post-AI stroke
+            ctx.beginPath();
+            for (let x = xMin; x <= xMax; x += 0.02) {
+                const cx = toX(x), cy = toY(gaussian(x, mu2, sigma2), maxY);
+                if (x === xMin) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+            }
+            ctx.strokeStyle = 'rgba(120,200,255,0.8)';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Tail zone
+            if (t > 0.1) {
+                const tailStart = mu2 + 2.2 * sigma2;
+                const tailX = toX(tailStart);
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = 'rgba(255,180,80,0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(tailX, padT + 10);
+                ctx.lineTo(tailX, padT + plotH);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = 'rgba(255,180,80,0.5)';
+                ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('\u2190 value zone', tailX + 6, padT + 18);
+            }
+
+            // Mean shift arrow
+            if (t > 0.1) {
+                const arrowY = padT + plotH - 12;
+                const fromX = toX(mu1);
+                const arrowToX = toX(mu2);
+                ctx.strokeStyle = 'rgba(120,200,255,0.4)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(fromX, arrowY);
+                ctx.lineTo(arrowToX - 4, arrowY);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(120,200,255,0.4)';
+                ctx.beginPath();
+                ctx.moveTo(arrowToX, arrowY);
+                ctx.lineTo(arrowToX - 6, arrowY - 3);
+                ctx.lineTo(arrowToX - 6, arrowY + 3);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(120,200,255,0.5)';
+                ctx.font = '9px -apple-system, BlinkMacSystemFont, system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('mean shifts \u2192', (fromX + arrowToX) / 2, arrowY - 7);
+            }
+        }
+
+        function updateChart() {
+            sliderVal.textContent = slider.value + '%';
+            drawChart();
+        }
+
+        slider.addEventListener('input', updateChart);
+        updateChart();
+    </script>
+</body>
+</html>
