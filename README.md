@@ -1,5 +1,5 @@
-# neip.vc
+# neip.md
 
-Personal website for Noah Petermann. Single static HTML file deployed on Vercel.
+Personal website for Noah Petermann. Static HTML deployed on Vercel.
 
-**https://neip.vc**
+**https://neip.md** (neip.vc redirects here)
