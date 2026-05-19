@@ -5,6 +5,11 @@
       "source": "/cal",
       "destination": "https://zeeg.me/aniva/noah",
       "permanent": false
+    },
+    {
+      "source": "/aniva",
+      "destination": "https://anivahealth.com",
+      "permanent": false
     }
   ],
   "rewrites": [
